@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distribuidora de Bebidas - Uberlândia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background: #1e3a8a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+    h2 {
+      color: #1e3a8a;
+    }
+    canvas {
+      width: 100% !important;
+      max-width: 600px;
+      margin: 20px auto;
+      display: block;
+    }
+    .simulador {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin: 10px 0 5px; }
+    input { padding: 8px; width: 100%; }
+    button {
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover { background: #3749a3; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Distribuidora de Bebidas - Uberlândia</h1>
+    <p>Venda direta ao consumidor · Atendimento Online</p>
+  </header>
+
+  <section>
+    <h2>📊 Pesquisa de Mercado</h2>
+    <p>
+      Uberlândia (MG) possui mais de 720 mil habitantes e um consumo elevado de bebidas 
+      (refrigerantes, cervejas e energéticos).  
+      Segundo a ABRAS (Associação Brasileira de Supermercados), bebidas representam 
+      cerca de <b>12% do ticket médio mensal</b> de compras em Minas Gerais.
+    </p>
+    <p>
+      Estima-se que cada família gaste em média <b>R$ 250 a R$ 400/mês</b> com bebidas.  
+      Isso gera um mercado local potencial de **R$ 150 a 200 milhões/ano**.
+    </p>
+    <canvas id="grafico"></canvas>
+  </section>
+
+  <section class="simulador">
+    <h2>💰 Simulador de Receita</h2>
+    <p>Preencha os campos para estimar o faturamento da distribuidora:</p>
+    <label for="clientes">Número de clientes por mês:</label>
+    <input type="number" id="clientes" value="100">
+    <label for="ticket">Ticket médio (R$):</label>
+    <input type="number" id="ticket" value="80">
+    <button onclick="calcular()">Calcular</button>
+    <p id="resultado"></p>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Gráfico
+    const ctx = document.getElementById('grafico');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Refrigerantes', 'Cervejas', 'Energéticos', 'Água'],
+        datasets: [{
+          label: 'Consumo médio por família (R$)',
+          data: [120, 180, 60, 40],
+          backgroundColor: ['#60a5fa','#f87171','#34d399','#fbbf24']
+        }]
+      }
+    });
+
+    // Simulador
+    function calcular() {
+      const clientes = document.getElementById("clientes").value;
+      const ticket = document.getElementById("ticket").value;
+      const mensal = clientes * ticket;
+      const anual = mensal * 12;
+      document.getElementById("resultado").innerHTML =
+        `📌 Faturamento estimado: <b>R$ ${mensal.toLocaleString()}</b> por mês 
+         e <b>R$ ${anual.toLocaleString()}</b> por ano.`;
+    }
+  </script>
+</body>
+</html>
