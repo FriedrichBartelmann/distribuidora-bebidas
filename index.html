@@ -39,11 +39,6 @@
     .tip strong{color:#856404}
     .competitors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
     .competitor-item{background:#f8f9fa;padding:10px;border-radius:6px;text-align:center;font-size:13px}
-    .cost-reference{background:#fffbf0;border:1px solid #ffc107;border-radius:8px;padding:12px;margin:8px 0;font-size:12px}
-    .cost-reference h4{margin:0 0 6px 0;color:#856404;font-size:13px}
-    .cost-reference ul{margin:0;padding-left:16px}
-    .cost-reference li{margin-bottom:4px}
-    .hidden{display:none}
   </style>
 </head>
 <body>
@@ -94,57 +89,20 @@
         </ul>
 
         <h3 style="margin-top:12px">⚙️ Configure seu cenário</h3>
-        
-        <label>Modelo de Negócio</label>
-        <select id="businessModel">
-          <option value="delivery">Delivery Online</option>
-          <option value="store">Loja de Rua</option>
-          <option value="hybrid">Modelo Híbrido</option>
-        </select>
+        <label>Pedidos por mês (estimativa inicial)</label>
+        <input type="number" id="orders" value="300" min="0" />
 
-        <div id="deliveryInputs">
-          <label>Pedidos por mês (estimativa inicial)</label>
-          <input type="number" id="orders" value="300" min="0" />
-
-          <label>Ticket médio por pedido (R$)</label>
-          <input type="number" id="ticket" value="42" min="0" step="1" />
-
-          <label>Custo entrega por pedido (R$)</label>
-          <input type="number" id="delivery" value="6" min="0" step="0.5" />
-        </div>
-
-        <div id="storeInputs" class="hidden">
-          <label>Vendas no balcão por mês</label>
-          <input type="number" id="storeOrders" value="450" min="0" />
-
-          <label>Ticket médio balcão (R$)</label>
-          <input type="number" id="storeTicket" value="28" min="0" step="1" />
-
-          <label>Aluguel mensal (R$)</label>
-          <input type="number" id="rent" value="1800" min="0" step="50" />
-
-          <label>Número de funcionários</label>
-          <input type="number" id="employees" value="1" min="0" step="1" />
-
-          <label>Custo por funcionário (R$)</label>
-          <input type="number" id="laborCost" value="1600" min="0" step="50" />
-
-          <div class="cost-reference" id="costReference">
-            <h4>💡 Referência de custos (2025)</h4>
-            <ul>
-              <li>Salário mínimo MG: ~R$ 1.412</li>
-              <li>Com encargos (40%): R$ 1.600-1.800</li>
-              <li>Vendedor experiente: R$ 2.000-2.500</li>
-              <li>Gerente/responsável: R$ 2.500-3.500</li>
-            </ul>
-          </div>
-        </div>
+        <label>Ticket médio por pedido (R$)</label>
+        <input type="number" id="ticket" value="42" min="0" step="1" />
 
         <label>Margem bruta (%)</label>
         <input type="number" id="margin" value="30" min="0" max="80" />
 
-        <label>Custos fixos mensais (internet, marketing, outros) (R$)</label>
-        <input type="number" id="fixedCosts" value="1200" min="0" step="50" />
+        <label>Custo entrega por pedido (R$)</label>
+        <input type="number" id="delivery" value="6" min="0" step="0.5" />
+
+        <label>Custos fixos mensais (aluguel, energia, internet, marketing) (R$)</label>
+        <input type="number" id="fixedCosts" value="2500" min="0" step="50" />
 
         <label>Estoque inicial (R$)</label>
         <input type="number" id="initialStock" value="8500" min="0" />
@@ -194,16 +152,6 @@
             <tr><td><strong>Payback (meses)</strong></td><td id="tblPayback">—</td></tr>
           </tbody>
         </table>
-
-        <div class="tip">
-          <strong>📝 Nota:</strong> Os custos fixos incluem:
-          <ul class="small">
-            <li>Funcionários × Custo unitário</li>
-            <li>Aluguel</li>
-            <li>Outros custos fixos (internet, marketing, etc.)</li>
-          </ul>
-          <p class="small">Agora quando você selecionar "Loja de Rua" ou "Híbrido", os campos de funcionários aparecerão e a referência de custos estará visível. Você pode ajustar conforme sua realidade!</p>
-        </div>
 
         <h4 style="margin-top:12px">✅ Checklist obrigatório Uberlândia</h4>
         <ul class="small">
@@ -366,10 +314,10 @@
     function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
 
     function calculate(){
-      const model = el('businessModel').value;
-      const marginPct = Number(el('margin').value)/100;
-      const fixed = Number(el('fixedCosts').value);
-      const capex = Number(el('initialCapex').value);
+      const model = el('businessModel')?.value || 'delivery';
+      const marginPct = Number(el('margin')?.value || 30)/100;
+      const fixed = Number(el('fixedCosts')?.value || 1200);
+      const capex = Number(el('initialCapex')?.value || 12000);
 
       let revenue = 0;
       let deliveryCost = 0;
@@ -378,20 +326,20 @@
 
       // Delivery calculations
       if(model === 'delivery' || model === 'hybrid'){
-        const orders = Number(el('orders').value);
-        const ticket = Number(el('ticket').value);
-        const delivery = Number(el('delivery').value);
+        const orders = Number(el('orders')?.value || 0);
+        const ticket = Number(el('ticket')?.value || 0);
+        const delivery = Number(el('delivery')?.value || 0);
         revenue += orders * ticket;
         deliveryCost += orders * delivery;
       }
 
       // Store calculations
       if(model === 'store' || model === 'hybrid'){
-        const storeOrders = Number(el('storeOrders').value);
-        const storeTicket = Number(el('storeTicket').value);
-        const employees = Number(el('employees').value);
-        const laborCostPerEmployee = Number(el('laborCost').value);
-        rentCost = Number(el('rent').value);
+        const storeOrders = Number(el('storeOrders')?.value || 0);
+        const storeTicket = Number(el('storeTicket')?.value || 0);
+        const employees = Number(el('employees')?.value || 0);
+        const laborCostPerEmployee = Number(el('laborCost')?.value || 1600);
+        rentCost = Number(el('rent')?.value || 0);
         laborCost = employees * laborCostPerEmployee;
         revenue += storeOrders * storeTicket;
       }
@@ -404,44 +352,124 @@
       const payback = operatingProfit > 0 ? (capex / operatingProfit) : Infinity;
       const roi = operatingProfit > 0 ? ((operatingProfit * 12) / capex * 100) : 0;
 
-      el('rev').textContent = fmt(Math.round(revenue));
-      el('profit').textContent = fmt(Math.round(operatingProfit));
-      el('netMargin').textContent = (netMargin>0? netMargin.toFixed(1):0) + '%';
-      el('roi').textContent = (roi>0? roi.toFixed(0):0) + '%';
+      if(el('rev')) el('rev').textContent = fmt(Math.round(revenue));
+      if(el('profit')) el('profit').textContent = fmt(Math.round(operatingProfit));
+      if(el('netMargin')) el('netMargin').textContent = (netMargin>0? netMargin.toFixed(1):0) + '%';
+      if(el('roi')) el('roi').textContent = (roi>0? roi.toFixed(0):0) + '%';
 
-      el('tblRev').textContent = fmt(Math.round(revenue));
-      el('tblCmv').textContent = fmt(Math.round(cmv));
-      el('tblDelivery').textContent = fmt(Math.round(deliveryCost));
-      el('tblFixed').textContent = fmt(Math.round(totalFixedCosts));
-      el('tblProfit').textContent = fmt(Math.round(operatingProfit));
-      el('tblPayback').textContent = isFinite(payback)? Math.max(1, Math.round(payback)) + ' meses' : '—';
+      if(el('tblRev')) el('tblRev').textContent = fmt(Math.round(revenue));
+      if(el('tblCmv')) el('tblCmv').textContent = fmt(Math.round(cmv));
+      if(el('tblDelivery')) el('tblDelivery').textContent = fmt(Math.round(deliveryCost));
+      if(el('tblFixed')) el('tblFixed').textContent = fmt(Math.round(totalFixedCosts));
+      if(el('tblProfit')) el('tblProfit').textContent = fmt(Math.round(operatingProfit));
+      if(el('tblPayback')) el('tblPayback').textContent = isFinite(payback)? Math.max(1, Math.round(payback)) + ' meses' : '—';
 
       // Scenario calculations with current margin
-      const revCons = 120 * 35;
-      const lucCons = Math.round((revCons * marginPct) - (120*6) - fixed);
+      const revDelivery = 300 * 42;
+      const lucDelivery = Math.round((revDelivery * marginPct) - (300*6) - 1200);
       
-      const revMod = 350 * 42;
-      const lucMod = Math.round((revMod * marginPct) - (350*6) - fixed);
+      const revStore = 450 * 28;
+      const lucStore = Math.round((revStore * marginPct) - 1800 - 1600 - 1200);
       
-      const revAgr = 900 * 48;
-      const lucAgr = Math.round((revAgr * marginPct) - (900*6) - fixed);
+      const revHybrid = (200 * 42) + (300 * 28);
+      const lucHybrid = Math.round((revHybrid * marginPct) - (200*6) - 1800 - 1600 - 1200);
 
-      el('revCons').textContent = fmt(revCons);
-      el('lucCons').textContent = fmt(Math.max(0, lucCons));
-      el('revMod').textContent = fmt(revMod);
-      el('lucMod').textContent = fmt(Math.max(0, lucMod));
-      el('revAgr').textContent = fmt(revAgr);
-      el('lucAgr').textContent = fmt(Math.max(0, lucAgr));
+      if(el('revDelivery')) el('revDelivery').textContent = fmt(revDelivery);
+      if(el('lucDelivery')) el('lucDelivery').textContent = fmt(Math.max(0, lucDelivery));
+      if(el('revStore')) el('revStore').textContent = fmt(revStore);
+      if(el('lucStore')) el('lucStore').textContent = fmt(Math.max(0, lucStore));
+      if(el('revHybrid')) el('revHybrid').textContent = fmt(revHybrid);
+      if(el('lucHybrid')) el('lucHybrid').textContent = fmt(Math.max(0, lucHybrid));
 
-      updateChart([revCons, revMod, revAgr],[Math.max(0, lucCons), Math.max(0, lucMod), Math.max(0, lucAgr)]);
+      updateChart([revDelivery, revStore, revHybrid],[Math.max(0, lucDelivery), Math.max(0, lucStore), Math.max(0, lucHybrid)]);
     }
 
     const ctx = document.getElementById('revChart').getContext('2d');
     let revChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Início Cauteloso','Crescimento Médio','Escala Consolidada'],
+        labels: ['Delivery Puro','Loja de Rua','Híbrido'],
         datasets: [
-          {label:'Receita (R$)', backgroundColor:'#0b5ed7', data:[4200,14700,43200]},
-          {label:'Lucro estimado (R$)', backgroundColor:'#10b981', data:[540,4200,15300]}
-       
+          {label:'Receita (R$)', backgroundColor:'#0b5ed7', data:[12600,12600,16800]},
+          {label:'Lucro estimado (R$)', backgroundColor:'#10b981', data:[3180,4620,5880]}
+        ]
+      },
+      options: {
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{legend:{position:'top'}},
+        scales:{y:{beginAtZero:true}}
+      }
+    });
+    
+    function updateChart(revs, lucros){ 
+      revChart.data.datasets[0].data = revs; 
+      revChart.data.datasets[1].data = lucros; 
+      revChart.update(); 
+    }
+
+    function toggleInputs(){
+      const model = el('businessModel')?.value || 'delivery';
+      const deliveryDiv = document.getElementById('deliveryInputs');
+      const storeDiv = document.getElementById('storeInputs');
+      
+      if(deliveryDiv && storeDiv){
+        if(model === 'delivery'){
+          deliveryDiv.style.display = 'block';
+          storeDiv.style.display = 'none';
+        } else if(model === 'store'){
+          deliveryDiv.style.display = 'none';
+          storeDiv.style.display = 'block';
+        } else {
+          deliveryDiv.style.display = 'block';
+          storeDiv.style.display = 'block';
+        }
+      }
+    }
+
+    // Initialize after DOM is ready
+    if(el('calcBtn')) {
+      el('calcBtn').addEventListener('click', calculate);
+    }
+    
+    if(el('resetBtn')) {
+      el('resetBtn').addEventListener('click', () => {
+        if(el('businessModel')) el('businessModel').value = 'delivery';
+        if(el('orders')) el('orders').value = 300;
+        if(el('ticket')) el('ticket').value = 42;
+        if(el('margin')) el('margin').value = 30;
+        if(el('delivery')) el('delivery').value = 6;
+        if(el('fixedCosts')) el('fixedCosts').value = 1200;
+        if(el('initialStock')) el('initialStock').value = 8500;
+        if(el('initialCapex')) el('initialCapex').value = 12000;
+        if(el('storeOrders')) el('storeOrders').value = 450;
+        if(el('storeTicket')) el('storeTicket').value = 28;
+        if(el('rent')) el('rent').value = 1800;
+        if(el('employees')) el('employees').value = 1;
+        if(el('laborCost')) el('laborCost').value = 1600;
+        toggleInputs();
+        calculate();
+      });
+    }
+
+    if(el('businessModel')) {
+      el('businessModel').addEventListener('change', () => {
+        toggleInputs();
+        calculate();
+      });
+    }
+
+    // Add listeners to all inputs to recalculate on change
+    ['orders', 'ticket', 'delivery', 'storeOrders', 'storeTicket', 'rent', 'employees', 'laborCost', 'margin', 'fixedCosts', 'initialStock', 'initialCapex'].forEach(id => {
+      const element = el(id);
+      if(element) {
+        element.addEventListener('input', calculate);
+      }
+    });
+
+    // Initialize
+    toggleInputs();
+    calculate();
+  </script>
+</body>
+</html>
