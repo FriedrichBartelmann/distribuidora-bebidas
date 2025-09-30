@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Plano: Distribuidora de Bebidas Uberlândia-MG — Simulador com Análise de Mercado</title>
-  
+
   <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
+
   <!-- Estilos -->
   <style>
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
@@ -37,6 +37,9 @@
     h3{color:#333;margin-bottom:8px;font-size:16px}
     .tip{background:#fff3cd;border-left:4px solid #ffc107;padding:12px;border-radius:6px;margin:12px 0}
     .tip strong{color:#856404}
+    .scenario-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .scenario-btns button{background:#10b981}
+    .scenario-btns button:hover{background:#0a8d68}
   </style>
 </head>
 <body>
@@ -47,15 +50,24 @@
   </header>
 
   <main class="wrap">
-    
-    <!-- ================= ANÁLISE DE MERCADO ================= -->
+
+    <!-- ================= INFO MERCADO ================= -->
     <div class="card highlight-box">
-      <h2>🎯 Análise do Mercado de Uberlândia (2025)</h2>
-      <p class="small"><strong>Uberlândia</strong> está entre as 25 cidades com maior potencial de consumo do Brasil. População de 754 mil habitantes e forte presença de apps de delivery tornam o mercado de bebidas promissor.</p>
+      <h2>🎯 Mercado de Uberlândia (2025)</h2>
+      <p class="small">
+        <strong>Uberlândia</strong> (754 mil habitantes, PIB per capita acima da média nacional) 
+        é um dos polos de consumo mais dinâmicos do Brasil. 
+        O setor de bebidas se beneficia de:
+      </p>
+      <ul class="small">
+        <li>📈 Forte uso de aplicativos de delivery (iFood, Rappi, Zé Delivery);</li>
+        <li>🍻 Público jovem universitário (UFU + faculdades privadas);</li>
+        <li>🎉 Eventos e vida noturna movimentada.</li>
+      </ul>
     </div>
 
     <div class="grid">
-      
+
       <!-- ================= SIMULADOR DE NEGÓCIO ================= -->
       <section class="card">
         <h2>💼 Configuração do Seu Negócio</h2>
@@ -120,6 +132,13 @@
           <button id="resetBtn" style="background:#6c757d">Resetar valores</button>
         </div>
 
+        <!-- Cenários pré-prontos -->
+        <div class="scenario-btns">
+          <button onclick="applyScenario('conservador')">Conservador</button>
+          <button onclick="applyScenario('moderado')">Moderado</button>
+          <button onclick="applyScenario('agressivo')">Agressivo</button>
+        </div>
+
         <!-- KPIs -->
         <div class="kpi" id="kpis">
           <div class="item"><div class="muted">Receita mensal</div><h3 id="rev">R$ 0</h3></div>
@@ -135,6 +154,36 @@
         <div class="chart-container"><canvas id="revChart"></canvas></div>
       </aside>
     </div>
+
+    <!-- ================= PESQUISA DE MERCADO DETALHADA ================= -->
+    <section class="card" style="margin-top:20px">
+      <h2>📌 Pesquisa de Mercado e Legalização</h2>
+      <h3>Estágios de Crescimento</h3>
+      <ul class="small">
+        <li><strong>Início Cauteloso:</strong> 200–300 pedidos/mês, receita R$ 8–12k, foco em delivery noturno.</li>
+        <li><strong>Crescimento Moderado:</strong> 500–600 pedidos/mês, receita R$ 20–25k, expansão em bairros.</li>
+        <li><strong>Escala:</strong> +800 pedidos/mês, receita R$ 35k+, entrada em eventos e bares parceiros.</li>
+      </ul>
+
+      <h3>Concorrência</h3>
+      <p class="small">Concorrentes diretos: grandes aplicativos (Zé Delivery), distribuidoras locais e mercados de bairro. Diferenciais podem ser <em>atendimento rápido</em>, <em>sortimento de rótulos artesanais</em> e <em>programas de fidelidade</em>.</p>
+
+      <h3>Legalização</h3>
+      <ul class="small">
+        <li>Registro MEI ou LTDA;</li>
+        <li>Alvará de funcionamento (Prefeitura de Uberlândia);</li>
+        <li>Licença Vigilância Sanitária (produtos alimentícios);</li>
+        <li>Permissão para venda de bebidas alcoólicas.</li>
+      </ul>
+
+      <h3>Riscos</h3>
+      <ul class="small">
+        <li>Sazonalidade (verão vs inverno);</li>
+        <li>Concorrência agressiva em promoções;</li>
+        <li>Dependência de aplicativos (taxas altas);</li>
+        <li>Gestão de estoque e validade.</li>
+      </ul>
+    </section>
   </main>
 
   <!-- ================= RODAPÉ ================= -->
@@ -210,6 +259,30 @@
       const model = el('businessModel').value;
       el('deliveryInputs').style.display = (model === 'delivery' || model==='hybrid') ? 'block':'none';
       el('storeInputs').style.display = (model === 'store' || model==='hybrid') ? 'block':'none';
+    }
+
+    // --- Cenários ---
+    function applyScenario(type){
+      if(type==='conservador'){
+        el('businessModel').value = 'delivery';
+        el('orders').value = 220; el('ticket').value = 38; el('margin').value = 28;
+        el('fixedCosts').value = 2000; el('initialCapex').value = 10000;
+      }
+      if(type==='moderado'){
+        el('businessModel').value = 'hybrid';
+        el('orders').value = 350; el('ticket').value = 40;
+        el('storeOrders').value = 250; el('storeTicket').value = 25;
+        el('employees').value = 2; el('rent').value = 2000;
+        el('margin').value = 32; el('fixedCosts').value = 2800; el('initialCapex').value = 15000;
+      }
+      if(type==='agressivo'){
+        el('businessModel').value = 'hybrid';
+        el('orders').value = 500; el('ticket').value = 45;
+        el('storeOrders').value = 400; el('storeTicket').value = 30;
+        el('employees').value = 3; el('rent').value = 2500;
+        el('margin').value = 35; el('fixedCosts').value = 3500; el('initialCapex').value = 20000;
+      }
+      toggleInputs(); calculate();
     }
 
     // --- Eventos ---
