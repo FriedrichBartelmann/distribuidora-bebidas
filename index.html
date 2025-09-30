@@ -20,7 +20,8 @@
     th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
     .small{font-size:13px;color:#666}
     footer{font-size:13px;color:#666;text-align:center;margin:24px 0}
-    canvas{max-width:100%}
+    .chart-container {position:relative;height:250px;width:100%}
+    canvas{max-width:100%;height:100%!important}
     .kpi{display:flex;gap:12px;margin-top:12px}
     .kpi .item{flex:1;background:#f8fafc;padding:12px;border-radius:8px;text-align:center}
     .item h3{margin:0;font-size:18px}
@@ -93,7 +94,9 @@
 
       <aside class="card">
         <h3>Gráficos & Projeções</h3>
-        <canvas id="revChart" width="400" height="240"></canvas>
+        <div class="chart-container">
+          <canvas id="revChart"></canvas>
+        </div>
         <h4 style="margin-top:12px">Detalhamento mensal</h4>
         <table>
           <thead><tr><th>Item</th><th>Valor (R$)</th></tr></thead>
@@ -232,8 +235,4 @@
     function updateChart(revs, lucros){ revChart.data.datasets[0].data = revs; revChart.data.datasets[1].data = lucros; revChart.update(); }
 
     el('calcBtn').addEventListener('click', calculate);
-    el('resetBtn').addEventListener('click', ()=>{ el('orders').value=300; el('ticket').value=40; el('margin').value=28; el('delivery').value=6; el('fixedCosts').value=2200; el('initialStock').value=7000; el('initialCapex').value=9000; calculate(); });
-    calculate();
-  </script>
-</body>
-</html>
+    el('
