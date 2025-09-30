@@ -285,6 +285,7 @@
         <li><strong>Estrutura mínima:</strong> 25-40m², vitrine visível, 2-3 geladeiras expositoras, balcão</li>
         <li><strong>Investimento adicional:</strong> R$ 15.000-25.000 (reformas, fachada, móveis, geladeiras)</li>
         <li><strong>Horário de funcionamento:</strong> 7h-22h (seg-sex) e 7h-23h (sáb-dom) para pegar movimento</li>
+        <li><strong>Custo funcionário:</strong> R$ 1.600-2.200/mês (salário mínimo + encargos trabalhistas ~40%)</li>
         <li><strong>Mix ideal:</strong> Água, refrigerantes, cerveja nacional, energéticos (consumo imediato gelado)</li>
         <li><strong>Diferencial:</strong> Produtos sempre gelados, atendimento rápido, promoções de balcão</li>
       </ul>
@@ -337,8 +338,9 @@
         const storeOrders = Number(el('storeOrders')?.value || 0);
         const storeTicket = Number(el('storeTicket')?.value || 0);
         const employees = Number(el('employees')?.value || 0);
+        const laborCostPerEmployee = Number(el('laborCost')?.value || 1600);
         rentCost = Number(el('rent')?.value || 0);
-        laborCost = employees * 1600;
+        laborCost = employees * laborCostPerEmployee;
         revenue += storeOrders * storeTicket;
       }
 
@@ -444,6 +446,7 @@
         if(el('storeTicket')) el('storeTicket').value = 28;
         if(el('rent')) el('rent').value = 1800;
         if(el('employees')) el('employees').value = 1;
+        if(el('laborCost')) el('laborCost').value = 1600;
         toggleInputs();
         calculate();
       });
@@ -457,7 +460,7 @@
     }
 
     // Add listeners to all inputs to recalculate on change
-    ['orders', 'ticket', 'delivery', 'storeOrders', 'storeTicket', 'rent', 'employees', 'margin', 'fixedCosts', 'initialStock', 'initialCapex'].forEach(id => {
+    ['orders', 'ticket', 'delivery', 'storeOrders', 'storeTicket', 'rent', 'employees', 'laborCost', 'margin', 'fixedCosts', 'initialStock', 'initialCapex'].forEach(id => {
       const element = el(id);
       if(element) {
         element.addEventListener('input', calculate);
