@@ -1,539 +1,447 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Plano: Distribuidora de Bebidas Uberlândia-MG — Simulador com Análise de Mercado</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
-    header{background:#0b5ed7;color:white;padding:18px 28px}
-    .wrap{max-width:1200px;margin:20px auto;padding:18px}
-    h1{margin:0;font-size:20px}
-    .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
-    @media(max-width:768px){.grid{grid-template-columns:1fr}}
-    .card{background:white;border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(12,20,40,0.06)}
-    .highlight-box{background:linear-gradient(135deg,#e3f2fd,#f3e5f5);border-left:4px solid #0b5ed7;padding:16px;border-radius:8px;margin:16px 0}
-    label{display:block;font-size:13px;color:#444;margin-top:8px}
-    input[type=number],select{width:100%;padding:8px;border-radius:6px;border:1px solid #d6d9e6;margin-top:6px;box-sizing:border-box}
-    button{background:#0b5ed7;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:14px}
-    button:hover{background:#0a4fb3}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-    th{background:#f8fafc;font-weight:600}
-    .small{font-size:13px;color:#666}
-    footer{font-size:13px;color:#666;text-align:center;margin:24px 0}
-    .chart-container {position:relative;height:250px;width:100%;margin-top:12px}
-    canvas{max-width:100%;height:100%!important}
-    .kpi{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
-    .kpi .item{flex:1;min-width:150px;background:#f8fafc;padding:12px;border-radius:8px;text-align:center}
-    .item h3{margin:0;font-size:18px;color:#0b5ed7}
-    .muted{color:#7b8794;font-size:13px}
-    h2{margin-top:0;color:#0b5ed7;font-size:22px}
-    h3{color:#333;margin-bottom:8px;font-size:16px}
-    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
-    .stat-card{background:#fff;border:1px solid #e5e7eb;padding:12px;border-radius:8px;text-align:center}
-    .stat-card .number{font-size:24px;font-weight:700;color:#0b5ed7}
-    .stat-card .label{font-size:12px;color:#666;margin-top:4px}
-    .tip{background:#fff3cd;border-left:4px solid #ffc107;padding:12px;border-radius:6px;margin:12px 0}
-    .tip strong{color:#856404}
-    .competitors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
-    .competitor-item{background:#f8f9fa;padding:10px;border-radius:6px;text-align:center;font-size:13px}
-    .staff-tip { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 6px; margin: 12px 0; }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plano: Distribuidora de Bebidas Uberlândia-MG — Simulador com Análise de Mercado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
+    header{background:#0b5ed7;color:white;padding:18px 28px}
+    .wrap{max-width:1200px;margin:20px auto;padding:18px}
+    h1{margin:0;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    @media(max-width:768px){.grid{grid-template-columns:1fr}}
+    .card{background:white;border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(12,20,40,0.06)}
+    .highlight-box{background:linear-gradient(135deg,#e3f2fd,#f3e5f5);border-left:4px solid #0b5ed7;padding:16px;border-radius:8px;margin:16px 0}
+    label{display:block;font-size:13px;color:#444;margin-top:8px}
+    input[type=number],select{width:100%;padding:8px;border-radius:6px;border:1px solid #d6d9e6;margin-top:6px;box-sizing:border-box}
+    button{background:#0b5ed7;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:14px}
+    button:hover{background:#0a4fb3}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    th{background:#f8fafc;font-weight:600}
+    .small{font-size:13px;color:#666}
+    footer{font-size:13px;color:#666;text-align:center;margin:24px 0}
+    .chart-container {position:relative;height:250px;width:100%;margin-top:12px}
+    canvas{max-width:100%;height:100%!important}
+    .kpi{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+    .kpi .item{flex:1;min-width:150px;background:#f8fafc;padding:12px;border-radius:8px;text-align:center}
+    .item h3{margin:0;font-size:18px;color:#0b5ed7}
+    .muted{color:#7b8794;font-size:13px}
+    h2{margin-top:0;color:#0b5ed7;font-size:22px}
+    h3{color:#333;margin-bottom:8px;font-size:16px}
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0}
+    .stat-card{background:#fff;border:1px solid #e5e7eb;padding:12px;border-radius:8px;text-align:center}
+    .stat-card .number{font-size:24px;font-weight:700;color:#0b5ed7}
+    .stat-card .label{font-size:12px;color:#666;margin-top:4px}
+    .tip{background:#fff3cd;border-left:4px solid #ffc107;padding:12px;border-radius:6px;margin:12px 0}
+    .tip strong{color:#856404}
+    .competitors{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+    .competitor-item{background:#f8f9fa;padding:10px;border-radius:6px;text-align:center;font-size:13px}
+    .cost-reference{background:#fffbf0;border:1px solid #ffc107;border-radius:8px;padding:12px;margin:8px 0;font-size:12px}
+    .cost-reference h4{margin:0 0 6px 0;color:#856404;font-size:13px}
+    .cost-reference ul{margin:0;padding-left:16px}
+    .cost-reference li{margin-bottom:4px}
+    .hidden{display:none}
+  </style>
 </head>
 <body>
-  <header>
-    <div class="wrap"><h1>📊 Plano e Simulador — Distribuidora de Bebidas Uberlândia-MG (Venda Online + Delivery)</h1></div>
-  </header>
-  <main class="wrap">
-    
-    <div class="card highlight-box">
-      <h2>🎯 Análise do Mercado de Uberlândia (2025)</h2>
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="number">754 mil</div>
-          <div class="label">População (2024)</div>
-        </div>
-        <div class="stat-card">
-          <div class="number">R$ 38,1 bi</div>
-          <div class="label">Potencial de Consumo (2025)</div>
-        </div>
-        <div class="stat-card">
-          <div class="number">2º maior</div>
-          <div class="label">Cidade de MG</div>
-        </div>
-        <div class="stat-card">
-          <div class="number">150 mil</div>
-          <div class="label">Empregos gerados (2024)</div>
-        </div>
-      </div>
-      <p class="small"><strong>Por que Uberlândia?</strong> Uberlândia está entre as 25 cidades com maior potencial de consumo do Brasil, com economia forte nos setores de serviços, comércio e indústria. A cidade tem crescimento populacional consistente e renda per capita acima da média nacional, tornando o mercado de bebidas muito promissor.</p>
-    </div>
+  <header>
+    <div class="wrap"><h1>📊 Plano e Simulador — Distribuidora de Bebidas Uberlândia-MG (Venda Online + Delivery)</h1></div>
+  </header>
+  <main class="wrap">
+    
+    <div class="card highlight-box">
+      <h2>🎯 Análise do Mercado de Uberlândia (2025)</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="number">754 mil</div>
+          <div class="label">População (2024)</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">R$ 38,1 bi</div>
+          <div class="label">Potencial de Consumo (2025)</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">2º maior</div>
+          <div class="label">Cidade de MG</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">150 mil</div>
+          <div class="label">Empregos gerados (2024)</div>
+        </div>
+      </div>
+      <p class="small"><strong>Por que Uberlândia?</strong> Uberlândia está entre as 25 cidades com maior potencial de consumo do Brasil, com economia forte nos setores de serviços, comércio e indústria. A cidade tem crescimento populacional consistente e renda per capita acima da média nacional, tornando o mercado de bebidas muito promissor.</p>
+    </div>
 
-    <div class="grid">
-      <section class="card">
-        <h2>💼 Configuração do Seu Negócio</h2>
-        <p class="small">Use este painel para testar cenários com <strong>vendas diretas ao consumidor online</strong> (WhatsApp, Instagram, iFood, Rappi, Uber Eats, Zé Delivery) em pequena escala.</p>
+    <div class="grid">
+      <section class="card">
+        <h2>💼 Configuração do Seu Negócio</h2>
+        <p class="small">Use este painel para testar cenários com <strong>vendas diretas ao consumidor online</strong> (WhatsApp, Instagram, iFood, Rappi, Uber Eats, Zé Delivery) em pequena escala.</p>
 
-        <div class="tip">
-          <strong>💡 Dica:</strong> Uberlândia já possui concorrência estabelecida (Zé Delivery, distribuidoras locais), mas há espaço para nichos: bairros específicos, atendimento ultra-rápido (menos de 30min), produtos premium ou artesanais.
-        </div>
+        <div class="tip">
+          <strong>💡 Dica:</strong> Uberlândia já possui concorrência estabelecida (Zé Delivery, distribuidoras locais), mas há espaço para nichos: bairros específicos, atendimento ultra-rápido (menos de 30min), produtos premium ou artesanais.
+        </div>
 
-        <h3 style="margin-top:16px">Premissas iniciais (ajustadas para Uberlândia)</h3>
-        <ul class="small">
-          <li>Estoque inicial sugerido: <strong>R$ 7.000 - R$ 12.000</strong> (mix: água, refrigerante, cerveja nacional/importada, energéticos, vinhos)</li>
-          <li>Investimento fixo estimado: <strong>R$ 9.000 - R$ 15.000</strong> (geladeira comercial, equipamentos, registro MEI, marketing inicial)</li>
-          <li>Taxa média de margem bruta: <strong>25% - 35%</strong> (variável por categoria)</li>
-          <li>Custo de entrega médio: <strong>R$ 5 - R$ 8</strong> (considerar raio de até 5km)</li>
-          <li>Horário nobre: 18h-23h (sexta-domingo) = 60% do volume</li>
-        </ul>
+        <h3 style="margin-top:16px">Premissas iniciais (ajustadas para Uberlândia)</h3>
+        <ul class="small">
+          <li>Estoque inicial sugerido: <strong>R$ 7.000 - R$ 12.000</strong> (mix: água, refrigerante, cerveja nacional/importada, energéticos, vinhos)</li>
+          <li>Investimento fixo estimado: <strong>R$ 9.000 - R$ 15.000</strong> (geladeira comercial, equipamentos, registro MEI, marketing inicial)</li>
+          <li>Taxa média de margem bruta: <strong>25% - 35%</strong> (variável por categoria)</li>
+          <li>Custo de entrega médio: <strong>R$ 5 - R$ 8</strong> (considerar raio de até 5km)</li>
+          <li>Horário nobre: 18h-23h (sexta-domingo) = 60% do volume</li>
+        </ul>
 
-        <h3 style="margin-top:12px">⚙️ Configure seu cenário</h3>
-        <label>Modelo de Negócio</label>
-        <select id="businessModel">
-          <option value="delivery">Delivery Online</option>
-          <option value="store">Loja de Rua (Ponto Físico)</option>
-          <option value="hybrid">Híbrido (Delivery + Loja)</option>
-        </select>
+        <h3 style="margin-top:12px">⚙️ Configure seu cenário</h3>
+        
+        <label>Modelo de Negócio</label>
+        <select id="businessModel">
+          <option value="delivery">Delivery Online</option>
+          <option value="store">Loja de Rua</option>
+          <option value="hybrid">Modelo Híbrido</option>
+        </select>
 
-                <div id="staffTip" class="staff-tip" style="display:none; margin-top: 16px;">
-          <strong>💡 Referência de custos (2025)</strong>
-          <ul class="small" style="margin-top: 6px; margin-bottom: 0;">
-            <li>Salário mínimo MG: ~R$ 1.412</li>
-            <li>Com encargos (40%): R$ 1.600-1.800</li>
-            <li>Vendedor experiente: R$ 2.000-2.500</li>
-            <li>Gerente/responsável: R$ 2.500-3.500</li>
-          </ul>
-        </div>
+        <div id="deliveryInputs">
+          <label>Pedidos por mês (estimativa inicial)</label>
+          <input type="number" id="orders" value="300" min="0" />
 
-        <div id="deliveryInputs">
-          <label>Pedidos por mês (estimativa inicial)</label>
-          <input type="number" id="orders" value="300" min="0" />
-          <label>Ticket médio por pedido (R$)</label>
-          <input type="number" id="ticket" value="42" min="0" step="1" />
-          <label>Custo entrega por pedido (R$)</label>
-          <input type="number" id="delivery" value="6" min="0" step="0.5" />
-        </div>
-        
-        <div id="storeInputs" style="display:none;">
-          <label>Vendas no balcão por mês (estimativa)</label>
-          <input type="number" id="storeOrders" value="450" min="0" />
-          <label>Ticket médio balcão (R$)</label>
-          <input type="number" id="storeTicket" value="28" min="0" step="1" />
-          <label>Aluguel mensal (R$)</label>
-          <input type="number" id="rent" value="1800" min="0" />
-        </div>
+          <label>Ticket médio por pedido (R$)</label>
+          <input type="number" id="ticket" value="42" min="0" step="1" />
 
-                <div id="staffInputs" style="display:none;">
-          <label>Funcionários</label>
-          <input type="number" id="employees" value="1" min="0" max="10" />
-          <label>Custo unitário por funcionário (R$/mês)</label>
-          <input type="number" id="laborCost" value="1600" min="0" />
-        </div>
+          <label>Custo entrega por pedido (R$)</label>
+          <input type="number" id="delivery" value="6" min="0" step="0.5" />
+        </div>
 
-        <label>Margem bruta (%)</label>
-        <input type="number" id="margin" value="30" min="0" max="80" />
+        <div id="storeInputs" class="hidden">
+          <label>Vendas no balcão por mês</label>
+          <input type="number" id="storeOrders" value="450" min="0" />
 
-        <label>Outros custos fixos mensais (energia, internet, marketing, etc.) (R$)</label>
-        <input type="number" id="fixedCosts" value="1200" min="0" step="50" />
+          <label>Ticket médio balcão (R$)</label>
+          <input type="number" id="storeTicket" value="28" min="0" step="1" />
 
-        <label>Estoque inicial (R$)</label>
-        <input type="number" id="initialStock" value="8500" min="0" />
+          <label>Aluguel mensal (R$)</label>
+          <input type="number" id="rent" value="1800" min="0" step="50" />
 
-        <label>Investimento inicial (equip., geladeira, registro, site) (R$)</label>
-        <input type="number" id="initialCapex" value="12000" min="0" />
+          <label>Número de funcionários</label>
+          <input type="number" id="employees" value="1" min="0" step="1" />
 
-        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
-          <button id="calcBtn">Calcular projeção</button>
-          <button id="resetBtn" style="background:#6c757d">Resetar valores</button>
-        </div>
+          <label>Custo por funcionário (R$)</label>
+          <input type="number" id="laborCost" value="1600" min="0" step="50" />
 
-        <div class="kpi" id="kpis">
-          <div class="item"><div class="muted">Receita mensal</div><h3 id="rev">R$ 0</h3></div>
-          <div class="item"><div class="muted">Lucro operacional</div><h3 id="profit">R$ 0</h3></div>
-          <div class="item"><div class="muted">Margem líquida</div><h3 id="netMargin">0%</h3></div>
-          <div class="item"><div class="muted">ROI anual</div><h3 id="roi">0%</h3></div>
-        </div>
+          <div class="cost-reference" id="costReference">
+            <h4>💡 Referência de custos (2025)</h4>
+            <ul>
+              <li>Salário mínimo MG: ~R$ 1.412</li>
+              <li>Com encargos (40%): R$ 1.600-1.800</li>
+              <li>Vendedor experiente: R$ 2.000-2.500</li>
+              <li>Gerente/responsável: R$ 2.500-3.500</li>
+            </ul>
+          </div>
+        </div>
 
-        <h3 style="margin-top:16px">📈 Cenários para Uberlândia</h3>
-        <table>
-          <thead><tr><th>Cenário</th><th>Pedidos/mês</th><th>Ticket</th><th>Receita</th><th>Lucro (est)</th></tr></thead>
-          <tbody>
-            <tr><td>Início Cauteloso</td><td>120</td><td>R$35</td><td id="revCons">R$ 4.200</td><td id="lucCons">R$ 540</td></tr>
-            <tr><td>Crescimento Médio</td><td>350</td><td>R$42</td><td id="revMod">R$ 14.700</td><td id="lucMod">R$ 4.200</td></tr>
-            <tr><td>Escala Consolidada</td><td>900</td><td>R$48</td><td id="revAgr">R$ 43.200</td><td id="lucAgr">R$ 15.300</td></tr>
-          </tbody>
-        </table>
+        <label>Margem bruta (%)</label>
+        <input type="number" id="margin" value="30" min="0" max="80" />
 
-        <p class="small" style="margin-top:12px"><strong>Observação:</strong> Cenários baseados em observações do mercado local. Fase inicial (0-6 meses) tende a ser mais conservadora. Após 12 meses com boa execução, é possível atingir 600-1000 pedidos/mês.</p>
-      </section>
+        <label>Custos fixos mensais (internet, marketing, outros) (R$)</label>
+        <input type="number" id="fixedCosts" value="1200" min="0" step="50" />
 
-      <aside class="card">
-        <h3>📊 Gráficos & Projeções</h3>
-        <div class="chart-container">
-          <canvas id="revChart"></canvas>
-        </div>
-        <h4 style="margin-top:12px">💰 Detalhamento mensal</h4>
-        <table>
-          <thead><tr><th>Item</th><th>Valor (R$)</th></tr></thead>
-          <tbody>
-            <tr><td>Receita mensal</td><td id="tblRev">R$ 0</td></tr>
-            <tr><td>Custo mercadoria (CMV)</td><td id="tblCmv">R$ 0</td></tr>
-            <tr><td>Despesas entrega</td><td id="tblDelivery">R$ 0</td></tr>
-            <tr><td class="staff-row">Custos com funcionários</td><td class="staff-row" id="tblLabor">R$ 0</td></tr>
-            <tr><td>Outros custos fixos</td><td id="tblFixed">R$ 0</td></tr>
-            <tr><td><strong>Lucro operacional</strong></td><td id="tblProfit">R$ 0</td></tr>
-            <tr><td><strong>Payback (meses)</strong></td><td id="tblPayback">—</td></tr>
-          </tbody>
-        </table>
-        <p class="small" style="margin-top: 8px;">
-          Os custos fixos mensais são a soma de:
-          <br>&#x2022; Funcionários &#xD7; Custo unitário
-          <br>&#x2022; Aluguel (para Loja de Rua ou Híbrido)
-          <br>&#x2022; Outros custos fixos
-        </p>
+        <label>Estoque inicial (R$)</label>
+        <input type="number" id="initialStock" value="8500" min="0" />
 
-        <h4 style="margin-top:12px">✅ Checklist obrigatório Uberlândia</h4>
-        <ul class="small">
-          <li>✓ Registro MEI ou ME (Junta Comercial MG)</li>
-          <li>✓ Alvará de Funcionamento (Prefeitura UDI)</li>
-          <li>✓ Vigilância Sanitária (bebidas não-alcoólicas)</li>
-          <li>✓ Licença especial para alcoólicos (se aplicável)</li>
-          <li>✓ Fornecedor atacadista local confiável</li>
-          <li>✓ WhatsApp Business + Instagram + Site</li>
-          <li>✓ Integração com iFood/Rappi/Uber Eats</li>
-          <li>✓ Motoboy próprio ou parceria</li>
-        </ul>
+        <label>Investimento inicial (equip., geladeira, registro, site) (R$)</label>
+        <input type="number" id="initialCapex" value="12000" min="0" />
 
-        <h4 style="margin-top:12px">🏪 Principais Concorrentes</h4>
-        <div class="competitors">
-          <div class="competitor-item">Zé Delivery</div>
-          <div class="competitor-item">Jotinha Beer</div>
-          <div class="competitor-item">Empório MRS</div>
-          <div class="competitor-item">WR Distribuidora</div>
-          <div class="competitor-item">Disk Bebidas Locais</div>
-        </div>
-        <p class="small">Diferencial: atendimento ultra-rápido, mix exclusivo, foco em bairros específicos, programa de fidelidade.</p>
-      </aside>
-    </div>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+          <button id="calcBtn">Calcular projeção</button>
+          <button id="resetBtn" style="background:#6c757d">Resetar valores</button>
+        </div>
 
-    <div class="card" style="margin-top:18px">
-      <h2>🔍 Pesquisa de Mercado Detalhada - Uberlândia 2025</h2>
-      
-      <h3>1) 👥 Demografia e Perfil do Consumidor</h3>
-      <ul class="small">
-        <li><strong>População:</strong> 754 mil habitantes (2024), com crescimento de ~1,5% ao ano</li>
-        <li><strong>Renda:</strong> Cidade com forte classe média, PIB per capita acima da média nacional</li>
-        <li><strong>Perfil:</strong> População jovem e conectada, alta penetração de smartphones e apps de delivery</li>
-        <li><strong>Hábitos:</strong> Consumo forte em fins de semana, eventos esportivos, churrascos, confraternizações</li>
-        <li><strong>Bairros promissores:</strong> Tibery, Santa Mônica, Jardim Karaíba, Centro, Umuarama, Tabajaras</li>
-      </ul>
+        <div class="kpi" id="kpis">
+          <div class="item"><div class="muted">Receita mensal</div><h3 id="rev">R$ 0</h3></div>
+          <div class="item"><div class="muted">Lucro operacional</div><h3 id="profit">R$ 0</h3></div>
+          <div class="item"><div class="muted">Margem líquida</div><h3 id="netMargin">0%</h3></div>
+          <div class="item"><div class="muted">ROI anual</div><h3 id="roi">0%</h3></div>
+        </div>
 
-      <h3>2) 📊 Volume e Ticket Médio Estimado</h3>
-      <p class="small">Projeções realistas para os primeiros 18 meses em Uberlândia:</p>
-      
-      <h4>Modelo Delivery Online:</h4>
-      <table>
-        <thead><tr><th>Fase</th><th>Período</th><th>Pedidos/mês</th><th>Ticket (R$)</th><th>Receita/mês</th></tr></thead>
-        <tbody>
-          <tr><td>Lançamento</td><td>Meses 1-3</td><td>80–180</td><td>35–40</td><td>R$ 2.800 – 7.200</td></tr>
-          <tr><td>Crescimento</td><td>Meses 4-9</td><td>250–450</td><td>38–45</td><td>R$ 9.500 – 20.250</td></tr>
-          <tr><td>Consolidação</td><td>Meses 10-18</td><td>600–1.200</td><td>42–52</td><td>R$ 25.000 – 62.400</td></tr>
-        </tbody>
-      </table>
+        <h3 style="margin-top:16px">📈 Cenários para Uberlândia</h3>
+        <table>
+          <thead><tr><th>Cenário</th><th>Pedidos/mês</th><th>Ticket</th><th>Receita</th><th>Lucro (est)</th></tr></thead>
+          <tbody>
+            <tr><td>Início Cauteloso</td><td>120</td><td>R$35</td><td id="revCons">R$ 4.200</td><td id="lucCons">R$ 540</td></tr>
+            <tr><td>Crescimento Médio</td><td>350</td><td>R$42</td><td id="revMod">R$ 14.700</td><td id="lucMod">R$ 4.200</td></tr>
+            <tr><td>Escala Consolidada</td><td>900</td><td>R$48</td><td id="revAgr">R$ 43.200</td><td id="lucAgr">R$ 15.300</td></tr>
+          </tbody>
+        </table>
 
-      <h4>Modelo Ponto Físico (Loja de Rua em Avenida):</h4>
-      <table>
-        <thead><tr><th>Fase</th><th>Período</th><th>Vendas/mês</th><th>Ticket (R$)</th><th>Receita/mês</th></tr></thead>
-        <tbody>
-          <tr><td>Lançamento</td><td>Meses 1-3</td><td>250–400</td><td>22–28</td><td>R$ 5.500 – 11.200</td></tr>
-          <tr><td>Crescimento</td><td>Meses 4-9</td><td>450–700</td><td>25–32</td><td>R$ 11.250 – 22.400</td></tr>
-          <tr><td>Consolidação</td><td>Meses 10-18</td><td>800–1.500</td><td>28–38</td><td>R$ 22.400 – 57.000</td></tr>
-        </tbody>
-      </table>
+        <p class="small" style="margin-top:12px"><strong>Observação:</strong> Cenários baseados em observações do mercado local. Fase inicial (0-6 meses) tende a ser mais conservadora. Após 12 meses com boa execução, é possível atingir 600-1000 pedidos/mês.</p>
+      </section>
 
-      <h4>Modelo Híbrido (Delivery + Ponto Físico):</h4>
-      <table>
-        <thead><tr><th>Fase</th><th>Período</th><th>Total vendas/mês</th><th>Mix</th><th>Receita/mês</th></tr></thead>
-        <tbody>
-          <tr><td>Lançamento</td><td>Meses 1-3</td><td>300–500</td><td>40% delivery / 60% balcão</td><td>R$ 8.000 – 15.000</td></tr>
-          <tr><td>Crescimento</td><td>Meses 4-9</td><td>600–1.000</td><td>45% delivery / 55% balcão</td><td>R$ 18.000 – 35.000</td></tr>
-          <tr><td>Consolidação</td><td>Meses 10-18</td><td>1.200–2.200</td><td>50% delivery / 50% balcão</td><td>R$ 40.000 – 85.000</td></tr>
-        </tbody>
-      </table>
+      <aside class="card">
+        <h3>📊 Gráficos & Projeções</h3>
+        <div class="chart-container">
+          <canvas id="revChart"></canvas>
+        </div>
+        <h4 style="margin-top:12px">💰 Detalhamento mensal</h4>
+        <table>
+          <thead><tr><th>Item</th><th>Valor (R$)</th></tr></thead>
+          <tbody>
+            <tr><td>Receita mensal</td><td id="tblRev">R$ 0</td></tr>
+            <tr><td>Custo mercadoria (CMV)</td><td id="tblCmv">R$ 0</td></tr>
+            <tr><td>Despesas entrega</td><td id="tblDelivery">R$ 0</td></tr>
+            <tr><td>Custos fixos</td><td id="tblFixed">R$ 0</td></tr>
+            <tr><td><strong>Lucro operacional</strong></td><td id="tblProfit">R$ 0</td></tr>
+            <tr><td><strong>Payback (meses)</strong></td><td id="tblPayback">—</td></tr>
+          </tbody>
+        </table>
 
-      <div class="tip">
-        <strong>💡 Insights importantes:</strong>
-        <ul class="small">
-          <li><strong>Ticket médio balcão é menor</strong> (R$ 22-38) vs delivery (R$ 35-52), mas o volume é maior</li>
-          <li><strong>Loja física</strong> atrai clientes de passagem, consumo imediato (água, energético, cerveja gelada)</li>
-          <li><strong>Custos fixos maiores</strong> com ponto físico (aluguel R$ 1.500-3.000 + funcionários)</li>
-          <li><strong>Vantagem híbrida:</strong> diversificação de receita e aproveitamento de estrutura</li>
-        </ul>
-      </div>
+        <div class="tip">
+          <strong>📝 Nota:</strong> Os custos fixos incluem:
+          <ul class="small">
+            <li>Funcionários × Custo unitário</li>
+            <li>Aluguel</li>
+            <li>Outros custos fixos (internet, marketing, etc.)</li>
+          </ul>
+          <p class="small">Agora quando você selecionar "Loja de Rua" ou "Híbrido", os campos de funcionários aparecerão e a referência de custos estará visível. Você pode ajustar conforme sua realidade!</p>
+        </div>
 
-      <h3>3) 💰 Expectativa de Faturamento e Lucratividade</h3>
-      <table>
-        <thead><tr><th>Cenário</th><th>Receita Mensal</th><th>Lucro Operacional</th><th>Margem Líquida</th></tr></thead>
-        <tbody>
-          <tr><td>Conservador (início)</td><td>R$ 4.200</td><td>R$ 540</td><td>~13%</td></tr>
-          <tr><td>Moderado (6-12 meses)</td><td>R$ 14.700</td><td>R$ 4.200</td><td>~29%</td></tr>
-          <tr><td>Agressivo (12-18 meses)</td><td>R$ 43.200</td><td>R$ 15.300</td><td>~35%</td></tr>
-        </tbody>
-      </table>
-      <p class="small"><strong>Observação:</strong> Margens dependem fortemente da negociação com fornecedores atacadistas locais e eficiência logística.</p>
+        <h4 style="margin-top:12px">✅ Checklist obrigatório Uberlândia</h4>
+        <ul class="small">
+          <li>✓ Registro MEI ou ME (Junta Comercial MG)</li>
+          <li>✓ Alvará de Funcionamento (Prefeitura UDI)</li>
+          <li>✓ Vigilância Sanitária (bebidas não-alcoólicas)</li>
+          <li>✓ Licença especial para alcoólicos (se aplicável)</li>
+          <li>✓ Fornecedor atacadista local confiável</li>
+          <li>✓ WhatsApp Business + Instagram + Site</li>
+          <li>✓ Integração com iFood/Rappi/Uber Eats</li>
+          <li>✓ Motoboy próprio ou parceria</li>
+        </ul>
 
-      <h3>4) ⚡ Fatores Críticos de Sucesso em Uberlândia</h3>
-      <div class="tip">
-        <strong>Diferenciação necessária:</strong>
-      </div>
-      <ul class="small">
-        <li><strong>Velocidade:</strong> Entrega em menos de 40 minutos (ideal: 20-30 min) em raio de 3-5km</li>
-        <li><strong>Mix inteligente:</strong> Cervejas artesanais locais + importadas + básicos sempre gelados</li>
-        <li><strong>Parcerias:</strong> Condomínios, bares pequenos, eventos locais, churrasqueiras de bairro</li>
-        <li><strong>Marketing digital:</strong> Instagram ativo, Google Ads local, parcerias com influenciadores da cidade</li>
-        <li><strong>Fidelização:</strong> Programa de cashback, cupons para clientes recorrentes</li>
-        <li><strong>Qualidade:</strong> Produtos sempre gelados, embalagem adequada, atendimento cordial</li>
-      </ul>
+        <h4 style="margin-top:12px">🏪 Principais Concorrentes</h4>
+        <div class="competitors">
+          <div class="competitor-item">Zé Delivery</div>
+          <div class="competitor-item">Jotinha Beer</div>
+          <div class="competitor-item">Empório MRS</div>
+          <div class="competitor-item">WR Distribuidora</div>
+          <div class="competitor-item">Disk Bebidas Locais</div>
+        </div>
+        <p class="small">Diferencial: atendimento ultra-rápido, mix exclusivo, foco em bairros específicos, programa de fidelidade.</p>
+      </aside>
+    </div>
 
-      <h3>5) ⚠️ Riscos e Estratégias de Mitigação</h3>
-      <table>
-        <thead><tr><th>Risco</th><th>Impacto</th><th>Mitigação</th></tr></thead>
-        <tbody>
-          <tr><td>Concorrência de grandes players</td><td>Alto</td><td>Foco em nichos, velocidade, atendimento personalizado</td></tr>
-          <tr><td>Sazonalidade (variação mensal)</td><td>Médio</td><td>Promoções em meses fracos, diversificação de produtos</td></tr>
-          <tr><td>Capital de giro insuficiente</td><td>Alto</td><td>Iniciar com menor mix, negociar prazo com fornecedores</td></tr>
-          <tr><td>Custos logísticos elevados</td><td>Médio</td><td>Otimizar rotas, moto própria após escala</td></tr>
-          <tr><td>Regulação (alcoólicos)</td><td>Médio</td><td>Assessoria contábil, licenças em dia</td></tr>
-        </tbody>
-      </table>
+    <div class="card" style="margin-top:18px">
+      <h2>🔍 Pesquisa de Mercado Detalhada - Uberlândia 2025</h2>
+      
+      <h3>1) 👥 Demografia e Perfil do Consumidor</h3>
+      <ul class="small">
+        <li><strong>População:</strong> 754 mil habitantes (2024), com crescimento de ~1,5% ao ano</li>
+        <li><strong>Renda:</strong> Cidade com forte classe média, PIB per capita acima da média nacional</li>
+        <li><strong>Perfil:</strong> População jovem e conectada, alta penetração de smartphones e apps de delivery</li>
+        <li><strong>Hábitos:</strong> Consumo forte em fins de semana, eventos esportivos, churrascos, confraternizações</li>
+        <li><strong>Bairros promissores:</strong> Tibery, Santa Mônica, Jardim Karaíba, Centro, Umuarama, Tabajaras</li>
+      </ul>
 
-      <h3>6) 🎯 Recomendações Específicas para Uberlândia</h3>
-      
-      <h4>Para modelo DELIVERY ONLINE:</h4>
-      <ul class="small">
-        <li><strong>Localização base:</strong> Bairros de classe média-alta (Tibery, Santa Mônica) com densidade populacional</li>
-        <li><strong>Raio de atendimento:</strong> Inicialmente 3-5km para garantir entregas em menos de 30 minutos</li>
-        <li><strong>Horário:</strong> Foco no período noturno (18h-23h) e fins de semana (60-70% do volume)</li>
-        <li><strong>Marketing inicial:</strong> R$ 300-500/mês em Meta Ads segmentado por bairro</li>
-      </ul>
+      <h3>2) 📊 Volume e Ticket Médio Estimado</h3>
+      <p class="small">Projeções realistas para os primeiros 18 meses em Uberlândia:</p>
+      
+      <h4>Modelo Delivery Online:</h4>
+      <table>
+        <thead><tr><th>Fase</th><th>Período</th><th>Pedidos/mês</th><th>Ticket (R$)</th><th>Receita/mês</th></tr></thead>
+        <tbody>
+          <tr><td>Lançamento</td><td>Meses 1-3</td><td>80–180</td><td>35–40</td><td>R$ 2.800 – 7.200</td></tr>
+          <tr><td>Crescimento</td><td>Meses 4-9</td><td>250–450</td><td>38–45</td><td>R$ 9.500 – 20.250</td></tr>
+          <tr><td>Consolidação</td><td>Meses 10-18</td><td>600–1.200</td><td>42–52</td><td>R$ 25.000 – 62.400</td></tr>
+        </tbody>
+      </table>
 
-      <h4>Para modelo LOJA DE RUA (Ponto Físico):</h4>
-      <ul class="small">
-        <li><strong>Localização ideal:</strong> Avenidas de movimento como Av. João Naves de Ávila, Av. Rondon Pacheco, Av. Nicomedes Alves dos Santos</li>
-        <li><strong>Ponto estratégico:</strong> Próximo a semáforos, pontos de ônibus, academias, escolas, ou em rotas de saída da cidade</li>
-        <li><strong>Estrutura mínima:</strong> 25-40m², vitrine visível, 2-3 geladeiras expositoras, balcão</li>
-        <li><strong>Investimento adicional:</strong> R$ 15.000-25.000 (reformas, fachada, móveis, geladeiras)</li>
-        <li><strong>Horário de funcionamento:</strong> 7h-22h (seg-sex) e 7h-23h (sáb-dom) para pegar movimento</li>
-        <li><strong>Custo funcionário:</strong> R$ 1.600-2.200/mês (salário mínimo + encargos trabalhistas ~40%)</li>
-        <li><strong>Mix ideal:</strong> Água, refrigerantes, cerveja nacional, energéticos (consumo imediato gelado)</li>
-        <li><strong>Diferencial:</strong> Produtos sempre gelados, atendimento rápido, promoções de balcão</li>
-      </ul>
+      <h4>Modelo Ponto Físico (Loja de Rua em Avenida):</h4>
+      <table>
+        <thead><tr><th>Fase</th><th>Período</th><th>Vendas/mês</th><th>Ticket (R$)</th><th>Receita/mês</th></tr></thead>
+        <tbody>
+          <tr><td>Lançamento</td><td>Meses 1-3</td><td>250–400</td><td>22–28</td><td>R$ 5.500 – 11.200</td></tr>
+          <tr><td>Crescimento</td><td>Meses 4-9</td><td>450–700</td><td>25–32</td><td>R$ 11.250 – 22.400</td></tr>
+          <tr><td>Consolidação</td><td>Meses 10-18</td><td>800–1.500</td><td>28–38</td><td>R$ 22.400 – 57.000</td></tr>
+        </tbody>
+      </table>
 
-      <h4>Para modelo HÍBRIDO (Recomendado):</h4>
-      <ul class="small">
-        <li><strong>Aproveitar o ponto físico</strong> como base de operação para delivery também</li>
-        <li><strong>Gestão integrada:</strong> Mesmo estoque serve ambos canais, otimizando capital de giro</li>
-        <li><strong>Marketing cruzado:</strong> Clientes de balcão viram clientes de delivery e vice-versa</li>
-        <li><strong>Funcionários multitarefa:</strong> Atendimento balcão + gestão de pedidos delivery</li>
-        <li><strong>Horário inteligente:</strong> Balcão durante o dia, foco em delivery à noite</li>
-      </ul>
+      <h4>Modelo Híbrido (Delivery + Ponto Físico):</h4>
+      <table>
+        <thead><tr><th>Fase</th><th>Período</th><th>Total vendas/mês</th><th>Mix</th><th>Receita/mês</th></tr></thead>
+        <tbody>
+          <tr><td>Lançamento</td><td>Meses 1-3</td><td>300–500</td><td>40% delivery / 60% balcão</td><td>R$ 8.000 – 15.000</td></tr>
+          <tr><td>Crescimento</td><td>Meses 4-9</td><td>600–1.000</td><td>45% delivery / 55% balcão</td><td>R$ 18.000 – 35.000</td></tr>
+          <tr><td>Consolidação</td><td>Meses 10-18</td><td>1.200–2.200</td><td>50% delivery / 50% balcão</td><td>R$ 40.000 – 85.000</td></tr>
+        </tbody>
+      </table>
 
-      <div class="highlight-box">
-        <h3>💡 Insight Final</h3>
-        <p class="small">Uberlândia tem mercado maduro mas não saturado. Com investimento inicial de R$ 12-15 mil e execução focada, é possível atingir breakeven em 4-6 meses e construir um negócio lucrativo em 12-18 meses. O segredo está em velocidade de entrega, atendimento impecável e marketing digital eficiente.</p>
-      </div>
-    </div>
+      <div class="tip">
+        <strong>💡 Insights importantes:</strong>
+        <ul class="small">
+          <li><strong>Ticket médio balcão é menor</strong> (R$ 22-38) vs delivery (R$ 35-52), mas o volume é maior</li>
+          <li><strong>Loja física</strong> atrai clientes de passagem, consumo imediato (água, energético, cerveja gelada)</li>
+          <li><strong>Custos fixos maiores</strong> com ponto físico (aluguel R$ 1.500-3.000 + funcionários)</li>
+          <li><strong>Vantagem híbrida:</strong> diversificação de receita e aproveitamento de estrutura</li>
+        </ul>
+      </div>
 
-  </main>
-  <footer>📄 Plano de Negócio Interativo — Baseado em dados reais de Uberlândia-MG (2025) &middot; Ajuste as variáveis para sua realidade específica.</footer>
+      <h3>3) 💰 Expectativa de Faturamento e Lucratividade</h3>
+      <table>
+        <thead><tr><th>Cenário</th><th>Receita Mensal</th><th>Lucro Operacional</th><th>Margem Líquida</th></tr></thead>
+        <tbody>
+          <tr><td>Conservador (início)</td><td>R$ 4.200</td><td>R$ 540</td><td>~13%</td></tr>
+          <tr><td>Moderado (6-12 meses)</td><td>R$ 14.700</td><td>R$ 4.200</td><td>~29%</td></tr>
+          <tr><td>Agressivo (12-18 meses)</td><td>R$ 43.200</td><td>R$ 15.300</td><td>~35%</td></tr>
+        </tbody>
+      </table>
+      <p class="small"><strong>Observação:</strong> Margens dependem fortemente da negociação com fornecedores atacadistas locais e eficiência logística.</p>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  <script>
-    const el = id => document.getElementById(id);
-    function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+      <h3>4) ⚡ Fatores Críticos de Sucesso em Uberlândia</h3>
+      <div class="tip">
+        <strong>Diferenciação necessária:</strong>
+      </div>
+      <ul class="small">
+        <li><strong>Velocidade:</strong> Entrega em menos de 40 minutos (ideal: 20-30 min) em raio de 3-5km</li>
+        <li><strong>Mix inteligente:</strong> Cervejas artesanais locais + importadas + básicos sempre gelados</li>
+        <li><strong>Parcerias:</strong> Condomínios, bares pequenos, eventos locais, churrasqueiras de bairro</li>
+        <li><strong>Marketing digital:</strong> Instagram ativo, Google Ads local, parcerias com influenciadores da cidade</li>
+        <li><strong>Fidelização:</strong> Programa de cashback, cupons para clientes recorrentes</li>
+        <li><strong>Qualidade:</strong> Produtos sempre gelados, embalagem adequada, atendimento cordial</li>
+      </ul>
 
-    function calculate(){
-      const model = el('businessModel')?.value || 'delivery';
-      const marginPct = Number(el('margin')?.value || 30)/100;
-      const fixed = Number(el('fixedCosts')?.value || 1200);
-      const capex = Number(el('initialCapex')?.value || 12000);
+      <h3>5) ⚠️ Riscos e Estratégias de Mitigação</h3>
+      <table>
+        <thead><tr><th>Risco</th><th>Impacto</th><th>Mitigação</th></tr></thead>
+        <tbody>
+          <tr><td>Concorrência de grandes players</td><td>Alto</td><td>Foco em nichos, velocidade, atendimento personalizado</td></tr>
+          <tr><td>Sazonalidade (variação mensal)</td><td>Médio</td><td>Promoções em meses fracos, diversificação de produtos</td></tr>
+          <tr><td>Capital de giro insuficiente</td><td>Alto</td><td>Iniciar com menor mix, negociar prazo com fornecedores</td></tr>
+          <tr><td>Custos logísticos elevados</td><td>Médio</td><td>Otimizar rotas, moto própria após escala</td></tr>
+          <tr><td>Regulação (alcoólicos)</td><td>Médio</td><td>Assessoria contábil, licenças em dia</td></tr>
+        </tbody>
+      </table>
 
-      let revenue = 0;
-      let deliveryCost = 0;
-      let laborCost = 0;
-      let rentCost = 0;
+      <h3>6) 🎯 Recomendações Específicas para Uberlândia</h3>
+      
+      <h4>Para modelo DELIVERY ONLINE:</h4>
+      <ul class="small">
+        <li><strong>Localização base:</strong> Bairros de classe média-alta (Tibery, Santa Mônica) com densidade populacional</li>
+        <li><strong>Raio de atendimento:</strong> Inicialmente 3-5km para garantir entregas em menos de 30 minutos</li>
+        <li><strong>Horário:</strong> Foco no período noturno (18h-23h) e fins de semana (60-70% do volume)</li>
+        <li><strong>Marketing inicial:</strong> R$ 300-500/mês em Meta Ads segmentado por bairro</li>
+      </ul>
 
-      // Delivery calculations
-      if(model === 'delivery' || model === 'hybrid'){
-        const orders = Number(el('orders')?.value || 0);
-        const ticket = Number(el('ticket')?.value || 0);
-        const delivery = Number(el('delivery')?.value || 0);
-        revenue += orders * ticket;
-        deliveryCost += orders * delivery;
-      }
+      <h4>Para modelo LOJA DE RUA (Ponto Físico):</h4>
+      <ul class="small">
+        <li><strong>Localização ideal:</strong> Avenidas de movimento como Av. João Naves de Ávila, Av. Rondon Pacheco, Av. Nicomedes Alves dos Santos</li>
+        <li><strong>Ponto estratégico:</strong> Próximo a semáforos, pontos de ônibus, academias, escolas, ou em rotas de saída da cidade</li>
+        <li><strong>Estrutura mínima:</strong> 25-40m², vitrine visível, 2-3 geladeiras expositoras, balcão</li>
+        <li><strong>Investimento adicional:</strong> R$ 15.000-25.000 (reformas, fachada, móveis, geladeiras)</li>
+        <li><strong>Horário de funcionamento:</strong> 7h-22h (seg-sex) e 7h-23h (sáb-dom) para pegar movimento</li>
+        <li><strong>Custo funcionário:</strong> R$ 1.600-2.200/mês (salário mínimo + encargos trabalhistas ~40%)</li>
+        <li><strong>Mix ideal:</strong> Água, refrigerantes, cerveja nacional, energéticos (consumo imediato gelado)</li>
+        <li><strong>Diferencial:</strong> Produtos sempre gelados, atendimento rápido, promoções de balcão</li>
+      </ul>
 
-      // Store calculations
-      if(model === 'store' || model === 'hybrid'){
-        const storeOrders = Number(el('storeOrders')?.value || 0);
-        const storeTicket = Number(el('storeTicket')?.value || 0);
-        const employees = Number(el('employees')?.value || 0);
-        const laborCostPerEmployee = Number(el('laborCost')?.value || 1600);
-        rentCost = Number(el('rent')?.value || 0);
-        laborCost = employees * laborCostPerEmployee;
-        revenue += storeOrders * storeTicket;
-      }
+      <h4>Para modelo HÍBRIDO (Recomendado):</h4>
+      <ul class="small">
+        <li><strong>Aproveitar o ponto físico</strong> como base de operação para delivery também</li>
+        <li><strong>Gestão integrada:</strong> Mesmo estoque serve ambos canais, otimizando capital de giro</li>
+        <li><strong>Marketing cruzado:</strong> Clientes de balcão viram clientes de delivery e vice-versa</li>
+        <li><strong>Funcionários multitarefa:</strong> Atendimento balcão + gestão de pedidos delivery</li>
+        <li><strong>Horário inteligente:</strong> Balcão durante o dia, foco em delivery à noite</li>
+      </ul>
 
-      const cmv = revenue * (1 - marginPct);
-      const totalFixedCosts = fixed + rentCost + laborCost;
-      const grossProfit = revenue - cmv - deliveryCost;
-      const operatingProfit = grossProfit - totalFixedCosts;
-      const netMargin = revenue > 0 ? ((operatingProfit / revenue) * 100) : 0;
-      const payback = operatingProfit > 0 ? (capex / operatingProfit) : Infinity;
-      const roi = operatingProfit > 0 ? ((operatingProfit * 12) / capex * 100) : 0;
+      <div class="highlight-box">
+        <h3>💡 Insight Final</h3>
+        <p class="small">Uberlândia tem mercado maduro mas não saturado. Com investimento inicial de R$ 12-15 mil e execução focada, é possível atingir breakeven em 4-6 meses e construir um negócio lucrativo em 12-18 meses. O segredo está em velocidade de entrega, atendimento impecável e marketing digital eficiente.</p>
+      </div>
+    </div>
 
-      if(el('rev')) el('rev').textContent = fmt(Math.round(revenue));
-      if(el('profit')) el('profit').textContent = fmt(Math.round(operatingProfit));
-      if(el('netMargin')) el('netMargin').textContent = (netMargin>0? netMargin.toFixed(1):0) + '%';
-      if(el('roi')) el('roi').textContent = (roi>0? roi.toFixed(0):0) + '%';
+  </main>
+  <footer>📄 Plano de Negócio Interativo — Baseado em dados reais de Uberlândia-MG (2025) &middot; Ajuste as variáveis para sua realidade específica.</footer>
 
-      if(el('tblRev')) el('tblRev').textContent = fmt(Math.round(revenue));
-      if(el('tblCmv')) el('tblCmv').textContent = fmt(Math.round(cmv));
-      if(el('tblDelivery')) el('tblDelivery').textContent = fmt(Math.round(deliveryCost));
-      if(el('tblFixed')) el('tblFixed').textContent = fmt(Math.round(fixed + rentCost));
-      if(el('tblLabor')) el('tblLabor').textContent = fmt(Math.round(laborCost));
-      if(el('tblProfit')) el('tblProfit').textContent = fmt(Math.round(operatingProfit));
-      if(el('tblPayback')) el('tblPayback').textContent = isFinite(payback)? Math.max(1, Math.round(payback)) + ' meses' : '—';
-      
-      const staffRows = document.querySelectorAll('.staff-row');
-      if (model === 'store' || model === 'hybrid') {
-        staffRows.forEach(row => row.style.display = 'table-row');
-      } else {
-        staffRows.forEach(row => row.style.display = 'none');
-      }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script>
+    const el = id => document.getElementById(id);
+    function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
 
-      // Scenario calculations with current margin
-      const revDelivery = 300 * 42;
-      const lucDelivery = Math.round((revDelivery * marginPct) - (300*6) - 1200);
-      
-      const revStore = 450 * 28;
-      const lucStore = Math.round((revStore * marginPct) - 1800 - (1 * 1600) - 1200); // 1 employee
-      
-      const revHybrid = (200 * 42) + (300 * 28);
-      const lucHybrid = Math.round((revHybrid * marginPct) - (200*6) - 1800 - (1 * 1600) - 1200); // 1 employee
+    function calculate(){
+      const model = el('businessModel').value;
+      const marginPct = Number(el('margin').value)/100;
+      const fixed = Number(el('fixedCosts').value);
+      const capex = Number(el('initialCapex').value);
 
-      if(el('revDelivery')) el('revDelivery').textContent = fmt(revDelivery);
-      if(el('lucDelivery')) el('lucDelivery').textContent = fmt(Math.max(0, lucDelivery));
-      if(el('revStore')) el('revStore').textContent = fmt(revStore);
-      if(el('lucStore')) el('lucStore').textContent = fmt(Math.max(0, lucStore));
-      if(el('revHybrid')) el('revHybrid').textContent = fmt(revHybrid);
-      if(el('lucHybrid')) el('lucHybrid').textContent = fmt(Math.max(0, lucHybrid));
+      let revenue = 0;
+      let deliveryCost = 0;
+      let laborCost = 0;
+      let rentCost = 0;
 
-      updateChart([revDelivery, revStore, revHybrid],[Math.max(0, lucDelivery), Math.max(0, lucStore), Math.max(0, lucHybrid)]);
-    }
+      // Delivery calculations
+      if(model === 'delivery' || model === 'hybrid'){
+        const orders = Number(el('orders').value);
+        const ticket = Number(el('ticket').value);
+        const delivery = Number(el('delivery').value);
+        revenue += orders * ticket;
+        deliveryCost += orders * delivery;
+      }
 
-    const ctx = document.getElementById('revChart').getContext('2d');
-    let revChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Delivery Puro','Loja de Rua','Híbrido'],
-        datasets: [
-          {label:'Receita (R$)', backgroundColor:'#0b5ed7', data:[12600,12600,16800]},
-          {label:'Lucro estimado (R$)', backgroundColor:'#10b981', data:[3180,4620,5880]}
-        ]
-      },
-      options: {
-        responsive:true,
-        maintainAspectRatio:false,
-        plugins:{legend:{position:'top'}},
-        scales:{y:{beginAtZero:true}}
-      }
-    });
-    
-    function updateChart(revs, lucros){ 
-      revChart.data.datasets[0].data = revs; 
-      revChart.data.datasets[1].data = lucros; 
-      revChart.update(); 
-    }
+      // Store calculations
+      if(model === 'store' || model === 'hybrid'){
+        const storeOrders = Number(el('storeOrders').value);
+        const storeTicket = Number(el('storeTicket').value);
+        const employees = Number(el('employees').value);
+        const laborCostPerEmployee = Number(el('laborCost').value);
+        rentCost = Number(el('rent').value);
+        laborCost = employees * laborCostPerEmployee;
+        revenue += storeOrders * storeTicket;
+      }
 
-    function toggleInputs(){
-      const model = el('businessModel')?.value || 'delivery';
-      const deliveryDiv = document.getElementById('deliveryInputs');
-      const storeDiv = document.getElementById('storeInputs');
-      const staffDiv = document.getElementById('staffInputs');
-      const staffTip = document.getElementById('staffTip');
-      const staffRows = document.querySelectorAll('.staff-row');
+      const cmv = revenue * (1 - marginPct);
+      const totalFixedCosts = fixed + rentCost + laborCost;
+      const grossProfit = revenue - cmv - deliveryCost;
+      const operatingProfit = grossProfit - totalFixedCosts;
+      const netMargin = revenue > 0 ? ((operatingProfit / revenue) * 100) : 0;
+      const payback = operatingProfit > 0 ? (capex / operatingProfit) : Infinity;
+      const roi = operatingProfit > 0 ? ((operatingProfit * 12) / capex * 100) : 0;
 
-      if(deliveryDiv && storeDiv && staffDiv && staffTip){
-        if(model === 'delivery'){
-          deliveryDiv.style.display = 'block';
-          storeDiv.style.display = 'none';
-          staffDiv.style.display = 'none';
-          staffTip.style.display = 'none';
-        } else if(model === 'store'){
-          deliveryDiv.style.display = 'none';
-          storeDiv.style.display = 'block';
-          staffDiv.style.display = 'block';
-          staffTip.style.display = 'block';
-        } else {
-          deliveryDiv.style.display = 'block';
-          storeDiv.style.display = 'block';
-          staffDiv.style.display = 'block';
-          staffTip.style.display = 'block';
-        }
-      }
-      // Hide/show staff costs row in table
-      if (model === 'store' || model === 'hybrid') {
-        staffRows.forEach(row => row.style.display = 'table-row');
-      } else {
-        staffRows.forEach(row => row.style.display = 'none');
-      }
-    }
+      el('rev').textContent = fmt(Math.round(revenue));
+      el('profit').textContent = fmt(Math.round(operatingProfit));
+      el('netMargin').textContent = (netMargin>0? netMargin.toFixed(1):0) + '%';
+      el('roi').textContent = (roi>0? roi.toFixed(0):0) + '%';
 
-    // Initialize after DOM is ready
-    if(el('calcBtn')) {
-      el('calcBtn').addEventListener('click', calculate);
-    }
-    
-    if(el('resetBtn')) {
-      el('resetBtn').addEventListener('click', () => {
-        if(el('businessModel')) el('businessModel').value = 'delivery';
-        if(el('orders')) el('orders').value = 300;
-        if(el('ticket')) el('ticket').value = 42;
-        if(el('margin')) el('margin').value = 30;
-        if(el('delivery')) el('delivery').value = 6;
-        if(el('fixedCosts')) el('fixedCosts').value = 1200;
-        if(el('initialStock')) el('initialStock').value = 8500;
-        if(el('initialCapex')) el('initialCapex').value = 12000;
-        if(el('storeOrders')) el('storeOrders').value = 450;
-        if(el('storeTicket')) el('storeTicket').value = 28;
-        if(el('rent')) el('rent').value = 1800;
-        if(el('employees')) el('employees').value = 1;
-        if(el('laborCost')) el('laborCost').value = 1600;
-        toggleInputs();
-        calculate();
-      });
-    }
+      el('tblRev').textContent = fmt(Math.round(revenue));
+      el('tblCmv').textContent = fmt(Math.round(cmv));
+      el('tblDelivery').textContent = fmt(Math.round(deliveryCost));
+      el('tblFixed').textContent = fmt(Math.round(totalFixedCosts));
+      el('tblProfit').textContent = fmt(Math.round(operatingProfit));
+      el('tblPayback').textContent = isFinite(payback)? Math.max(1, Math.round(payback)) + ' meses' : '—';
 
-    if(el('businessModel')) {
-      el('businessModel').addEventListener('change', () => {
-        toggleInputs();
-        calculate();
-      });
-    }
+      // Scenario calculations with current margin
+      const revCons = 120 * 35;
+      const lucCons = Math.round((revCons * marginPct) - (120*6) - fixed);
+      
+      const revMod = 350 * 42;
+      const lucMod = Math.round((revMod * marginPct) - (350*6) - fixed);
+      
+      const revAgr = 900 * 48;
+      const lucAgr = Math.round((revAgr * marginPct) - (900*6) - fixed);
 
-    // Add listeners to all inputs to recalculate on change
-    ['orders', 'ticket', 'delivery', 'storeOrders', 'storeTicket', 'rent', 'employees', 'laborCost', 'margin', 'fixedCosts', 'initialStock', 'initialCapex'].forEach(id => {
-      const element = el(id);
-      if(element) {
-        element.addEventListener('input', calculate);
-      }
-    });
+      el('revCons').textContent = fmt(revCons);
+      el('lucCons').textContent = fmt(Math.max(0, lucCons));
+      el('revMod').textContent = fmt(revMod);
+      el('lucMod').textContent = fmt(Math.max(0, lucMod));
+      el('revAgr').textContent = fmt(revAgr);
+      el('lucAgr').textContent = fmt(Math.max(0, lucAgr));
 
-    // Initialize
-    toggleInputs();
-    calculate();
-  </script>
-</body>
-</html>
+      updateChart([revCons, revMod, revAgr],[Math.max(0, lucCons), Math.max(0, lucMod), Math.max(0, lucAgr)]);
+    }
+
+    const ctx = document.getElementById('revChart').getContext('2d');
+    let revChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Início Cauteloso','Crescimento Médio','Escala Consolidada'],
+        datasets: [
+          {label:'Receita (R$)', backgroundColor:'#0b5ed7', data:[4200,14700,43200]},
+          {label:'Lucro estimado (R$)', backgroundColor:'#10b981', data:[540,4200,15300]}
+       
