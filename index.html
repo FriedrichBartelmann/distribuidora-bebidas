@@ -1,114 +1,239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Distribuidora de Bebidas - Uberlândia</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plano: Pequena Distribuidora de Bebidas (Uberlândia) — Simulador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: #f4f4f9;
-      color: #333;
-    }
-    header {
-      background: #1e3a8a;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    section {
-      max-width: 1000px;
-      margin: auto;
-      padding: 20px;
-    }
-    h2 {
-      color: #1e3a8a;
-    }
-    canvas {
-      width: 100% !important;
-      max-width: 600px;
-      margin: 20px auto;
-      display: block;
-    }
-    .simulador {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    label { display: block; margin: 10px 0 5px; }
-    input { padding: 8px; width: 100%; }
-    button {
-      background: #1e3a8a;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin-top: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    button:hover { background: #3749a3; }
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}
+    header{background:#0b5ed7;color:white;padding:18px 28px}
+    .wrap{max-width:1100px;margin:20px auto;padding:18px}
+    h1{margin:0;font-size:20px}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    .card{background:white;border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(12,20,40,0.06)}
+    label{display:block;font-size:13px;color:#444;margin-top:8px}
+    input[type=number],select{width:100%;padding:8px;border-radius:6px;border:1px solid #d6d9e6;margin-top:6px}
+    .row{display:flex;gap:8px}
+    button{background:#0b5ed7;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    .small{font-size:13px;color:#666}
+    footer{font-size:13px;color:#666;text-align:center;margin:24px 0}
+    canvas{max-width:100%}
+    .kpi{display:flex;gap:12px;margin-top:12px}
+    .kpi .item{flex:1;background:#f8fafc;padding:12px;border-radius:8px;text-align:center}
+    .item h3{margin:0;font-size:18px}
+    .muted{color:#7b8794;font-size:13px}
   </style>
 </head>
 <body>
   <header>
-    <h1>Distribuidora de Bebidas - Uberlândia</h1>
-    <p>Venda direta ao consumidor · Atendimento Online</p>
+    <div class="wrap"><h1>Plano e Simulador — Pequena Distribuidora de Bebidas (Venda Online + Delivery)</h1></div>
   </header>
+  <main class="wrap">
+    <div class="grid">
+      <section class="card">
+        <h2>Resumo e premissas</h2>
+        <p class="small">Use este painel para testar cenários com <strong>vendas diretas ao consumidor online</strong> (WhatsApp, Instagram, app de delivery) em pequena escala. Os números são exemplos — ajuste as variáveis à realidade local.</p>
 
-  <section>
-    <h2>📊 Pesquisa de Mercado</h2>
-    <p>
-      Uberlândia (MG) possui mais de 720 mil habitantes e um consumo elevado de bebidas 
-      (refrigerantes, cervejas e energéticos).  
-      Segundo a ABRAS (Associação Brasileira de Supermercados), bebidas representam 
-      cerca de <b>12% do ticket médio mensal</b> de compras em Minas Gerais.
-    </p>
-    <p>
-      Estima-se que cada família gaste em média <b>R$ 250 a R$ 400/mês</b> com bebidas.  
-      Isso gera um mercado local potencial de **R$ 150 a 200 milhões/ano**.
-    </p>
-    <canvas id="grafico"></canvas>
-  </section>
+        <h3 style="margin-top:12px">Premissas iniciais (padrão)</h3>
+        <ul class="small">
+          <li>Estoque inicial sugerido: <strong>R$ 7.000</strong> (mix básico: água, refrigerante, cerveja comum, energético)</li>
+          <li>Investimento fixo estimado: <strong>R$ 9.000</strong> (equipamento, pequenas reformas, registro)</li>
+          <li>Taxa média de margem bruta: entre <strong>20% e 35%</strong></li>
+          <li>Custo de entrega médio por pedido: <strong>R$ 6</strong></li>
+        </ul>
 
-  <section class="simulador">
-    <h2>💰 Simulador de Receita</h2>
-    <p>Preencha os campos para estimar o faturamento da distribuidora:</p>
-    <label for="clientes">Número de clientes por mês:</label>
-    <input type="number" id="clientes" value="100">
-    <label for="ticket">Ticket médio (R$):</label>
-    <input type="number" id="ticket" value="80">
-    <button onclick="calcular()">Calcular</button>
-    <p id="resultado"></p>
-  </section>
+        <h3 style="margin-top:12px">Configurar seu cenário</h3>
+        <label>Pedidos por mês (estimativa)</label>
+        <input type="number" id="orders" value="300" min="0" />
+
+        <label>Ticket médio por pedido (R$)</label>
+        <input type="number" id="ticket" value="40" min="0" step="1" />
+
+        <label>Margem bruta (%)</label>
+        <input type="number" id="margin" value="28" min="0" max="80" />
+
+        <label>Custo entrega por pedido (R$)</label>
+        <input type="number" id="delivery" value="6" min="0" step="0.5" />
+
+        <label>Custos fixos mensais (aluguel, energia, marketing) (R$)</label>
+        <input type="number" id="fixedCosts" value="2200" min="0" step="50" />
+
+        <label>Estoque inicial (R$)</label>
+        <input type="number" id="initialStock" value="7000" min="0" />
+
+        <label>Investimento inicial (equip., geladeira, registro) (R$)</label>
+        <input type="number" id="initialCapex" value="9000" min="0" />
+
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button id="calcBtn">Calcular projeção</button>
+          <button id="resetBtn" style="background:#6c757d">Resetar valores</button>
+        </div>
+
+        <div class="kpi" id="kpis">
+          <div class="item"><div class="muted">Receita mensal</div><h3 id="rev">R$ 0</h3></div>
+          <div class="item"><div class="muted">Lucro operacional</div><h3 id="profit">R$ 0</h3></div>
+          <div class="item"><div class="muted">Margem líquida</div><h3 id="netMargin">0%</h3></div>
+        </div>
+
+        <h3 style="margin-top:12px">Cenários prontos</h3>
+        <table>
+          <thead><tr><th>Cenário</th><th>Pedidos/mês</th><th>Ticket</th><th>Receita</th><th>Lucro (est)</th></tr></thead>
+          <tbody>
+            <tr><td>Conservador</td><td>100</td><td>R$30</td><td id="revCons">R$ 3.000</td><td id="lucCons">R$ 450</td></tr>
+            <tr><td>Moderado</td><td>300</td><td>R$40</td><td id="revMod">R$ 12.000</td><td id="lucMod">R$ 3.360</td></tr>
+            <tr><td>Agressivo</td><td>800</td><td>R$45</td><td id="revAgr">R$ 36.000</td><td id="lucAgr">R$ 12.600</td></tr>
+          </tbody>
+        </table>
+
+        <p class="small" style="margin-top:12px">Observação: as projeções acima assumem margens brutas típicas (25–35%) e custos logísticos modestos. Ajuste as variáveis para seu contexto.</p>
+      </section>
+
+      <aside class="card">
+        <h3>Gráficos & Projeções</h3>
+        <canvas id="revChart" width="400" height="240"></canvas>
+        <h4 style="margin-top:12px">Detalhamento mensal</h4>
+        <table>
+          <thead><tr><th>Item</th><th>Valor (R$)</th></tr></thead>
+          <tbody>
+            <tr><td>Receita mensal</td><td id="tblRev">R$ 0</td></tr>
+            <tr><td>Custo de mercadoria vendida (CMV)</td><td id="tblCmv">R$ 0</td></tr>
+            <tr><td>Despesas entrega</td><td id="tblDelivery">R$ 0</td></tr>
+            <tr><td>Custos fixos</td><td id="tblFixed">R$ 0</td></tr>
+            <tr><td><strong>Lucro operacional</strong></td><td id="tblProfit">R$ 0</td></tr>
+            <tr><td><strong>Payback (meses, CAPEX)</strong></td><td id="tblPayback">—</td></tr>
+          </tbody>
+        </table>
+
+        <h4 style="margin-top:12px">Checklist inicial</h4>
+        <ul class="small">
+          <li>Registro MEI/ME e alvará municipal</li>
+          <li>Vigilância Sanitária (se aplicável)</li>
+          <li>Fornecedor atacadista confiável</li>
+          <li>Sistema de pedidos: WhatsApp Business + Instagram + marketplace</li>
+          <li>Entregas: motoboy próprio ou parceria com apps</li>
+        </ul>
+      </aside>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h2>Pesquisa de Mercado & Expectativa de Faturamento (Resumo Profundo)</h2>
+      <p class="small">Baseando-se em observações de comércio local e hábitos de consumo urbanos, segue um resumo com fatores que impactam a demanda e a expectativa de faturamento para uma pequena distribuidora online.</p>
+
+      <h3>1) Demanda e público</h3>
+      <ul class="small">
+        <li>Cidade de porte médio/grande tende a ter demanda forte nas noites, fins de semana e eventos.</li>
+        <li>Segmentos-alvo: consumidores jovens (delivery), famílias (compras por conveniência), estabelecimentos pequenos (consumo regular).</li>
+      </ul>
+
+      <h3>2) Volume estimado e ticket</h3>
+      <p class="small">Estimativas iniciais para os primeiros 6–12 meses:</p>
+      <table>
+        <thead><tr><th>Fase</th><th>Pedidos/mês</th><th>Ticket médio (R$)</th><th>Receita/mês (R$)</th></tr></thead>
+        <tbody>
+          <tr><td>Lançamento (0–3 meses)</td><td>50–150</td><td>30–40</td><td>R$ 1.500 – 6.000</td></tr>
+          <tr><td>Crescimento (3–9 meses)</td><td>200–450</td><td>35–45</td><td>R$ 7.000 – 20.250</td></tr>
+          <tr><td>Escala inicial (9–18 meses)</td><td>500–1.200</td><td>40–50</td><td>R$ 20.000 – 60.000</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3) Expectativa de faturamento (cenários)</h3>
+      <p class="small">Com margens brutas entre 20%–35% e controle de custos, projeções de faturamento e lucro:</p>
+      <table>
+        <thead><tr><th>Cenário</th><th>Receita/mês (R$)</th><th>Lucro operacional estimado (R$)</th></tr></thead>
+        <tbody>
+          <tr><td>Conservador</td><td>R$ 3.000</td><td>R$ 450</td></tr>
+          <tr><td>Moderado</td><td>R$ 12.000</td><td>R$ 3.360</td></tr>
+          <tr><td>Agressivo</td><td>R$ 36.000</td><td>R$ 12.600</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4) Fatores críticos de sucesso</h3>
+      <ul class="small">
+        <li>Entrega rápida (1 hora ou menos) e confiável</li>
+        <li>Catálogo com mix balanceado (básicos + premium)</li>
+        <li>Parcerias locais (bares, eventos, condomínios)</li>
+        <li>Marketing local digital (ads e redes sociais) e WhatsApp</li>
+      </ul>
+
+      <h3>5) Riscos e mitigação</h3>
+      <ul class="small">
+        <li>Concorrência de grandes atacadistas — mitigação: nicho + serviço rápido</li>
+        <li>Capital de giro insuficiente — mitigação: iniciar com menor mix e consignação</li>
+        <li>Regulatório (bebidas alcoólicas) — mitigação: orientação contábil e fiscal</li>
+      </ul>
+
+      <p class="small">Use o simulador à esquerda para personalizar as projeções com seus números reais.</p>
+    </div>
+
+  </main>
+  <footer>Documento interativo — ajuste as variáveis, exporte e planeje seu negócio. &middot; Desenvolvido como modelo de plano de negócio simples.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Gráfico
-    const ctx = document.getElementById('grafico');
-    new Chart(ctx, {
+    const el = id => document.getElementById(id);
+    function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+
+    function calculate(){
+      const orders = Number(el('orders').value);
+      const ticket = Number(el('ticket').value);
+      const marginPct = Number(el('margin').value)/100;
+      const delivery = Number(el('delivery').value);
+      const fixed = Number(el('fixedCosts').value);
+      const stock = Number(el('initialStock').value);
+      const capex = Number(el('initialCapex').value);
+
+      const revenue = orders * ticket;
+      const cmv = revenue * (1 - marginPct); // cost of goods sold (approx)
+      const deliveryCost = orders * delivery;
+      const grossProfit = revenue - cmv - deliveryCost;
+      const operatingProfit = grossProfit - fixed;
+      const netMargin = revenue ? ((operatingProfit / revenue) * 100) : 0;
+      const payback = operatingProfit > 0 ? (capex / operatingProfit) : Infinity;
+
+      el('rev').textContent = fmt(Math.round(revenue));
+      el('profit').textContent = fmt(Math.round(operatingProfit));
+      el('netMargin').textContent = (netMargin>0? netMargin.toFixed(1):0) + '%';
+
+      el('tblRev').textContent = fmt(Math.round(revenue));
+      el('tblCmv').textContent = fmt(Math.round(cmv));
+      el('tblDelivery').textContent = fmt(Math.round(deliveryCost));
+      el('tblFixed').textContent = fmt(Math.round(fixed));
+      el('tblProfit').textContent = fmt(Math.round(operatingProfit));
+      el('tblPayback').textContent = isFinite(payback)? Math.max(1, Math.round(payback)) + ' meses' : '—';
+
+      // update scenario rows (basic recalculation using same margin/delivery assumption)
+      const revCons = 100 * 30;
+      const revMod = 300 * 40;
+      const revAgr = 800 * 45;
+      const lucCons = Math.round((revCons * marginPct) - (100*delivery) - fixed*0.2);
+      const lucMod = Math.round((revMod * marginPct) - (300*delivery) - fixed);
+      const lucAgr = Math.round((revAgr * marginPct) - (800*delivery) - fixed*1.5);
+      el('revCons').textContent = fmt(revCons); el('lucCons').textContent = fmt(lucCons);
+      el('revMod').textContent = fmt(revMod); el('lucMod').textContent = fmt(lucMod);
+      el('revAgr').textContent = fmt(revAgr); el('lucAgr').textContent = fmt(lucAgr);
+
+      updateChart([revCons, revMod, revAgr],[lucCons, lucMod, lucAgr]);
+    }
+
+    // Chart
+    const ctx = document.getElementById('revChart').getContext('2d');
+    let revChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Refrigerantes', 'Cervejas', 'Energéticos', 'Água'],
-        datasets: [{
-          label: 'Consumo médio por família (R$)',
-          data: [120, 180, 60, 40],
-          backgroundColor: ['#60a5fa','#f87171','#34d399','#fbbf24']
-        }]
-      }
+        labels: ['Conservador','Moderado','Agressivo'],
+        datasets: [{label:'Receita (R$)', backgroundColor:'#0b5ed7', data:[3000,12000,36000]},
+                   {label:'Lucro estimado (R$)', backgroundColor:'#ff8c42', data:[450,3360,12600]}]
+      },
+      options: {responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}
     });
+    function updateChart(revs, lucros){ revChart.data.datasets[0].data = revs; revChart.data.datasets[1].data = lucros; revChart.update(); }
 
-    // Simulador
-    function calcular() {
-      const clientes = document.getElementById("clientes").value;
-      const ticket = document.getElementById("ticket").value;
-      const mensal = clientes * ticket;
-      const anual = mensal * 12;
-      document.getElementById("resultado").innerHTML =
-        `📌 Faturamento estimado: <b>R$ ${mensal.toLocaleString()}</b> por mês 
-         e <b>R$ ${anual.toLocaleString()}</b> por ano.`;
-    }
+    el('calcBtn').addEventListener('click', calculate);
+    el('resetBtn').addEventListener('click', ()=>{ el('orders').value=300; el('ticket').value=40; el('margin').value=28; el('delivery').value=6; el('fixedCosts').value=2200; el('initialStock').value=7000; el('initialCapex').value=9000; calculate(); });
+    calculate();
   </script>
 </body>
 </html>
